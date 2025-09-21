@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
 export type Portfolio = {
   id: number;
   firstName: string;
   lastName: string;
-  address?: string;
-  phone?: string;
-  school?: string;
-  gpa?: number;
-  skills?: string;
-  reason?: string;
-  major?: string;
-  university?: string;
+  address: string;
+  phone: string;
+  school: string;
+  gpa: string;
+  skills: string;
+  reason: string;
+  major: string;
+  university: string;
 };
 
 type PortfolioContextType = {
@@ -26,8 +26,18 @@ const PortfolioContext = createContext<PortfolioContextType | undefined>(undefin
 export const PortfolioProvider = ({ children }: { children: ReactNode }) => {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
 
+  // โหลดจาก localStorage ตอนเริ่มต้น
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem('portfolios') || '[]');
+    setPortfolios(stored);
+  }, []);
+
   const addPortfolio = (portfolio: Portfolio) => {
-    setPortfolios((prev) => [...prev, portfolio]);
+    setPortfolios((prev) => {
+      const updated = [...prev, portfolio];
+      localStorage.setItem('portfolios', JSON.stringify(updated));
+      return updated;
+    });
   };
 
   return (

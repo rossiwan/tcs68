@@ -1,25 +1,19 @@
 'use client';
 
 import { useState } from 'react';
-import { usePortfolio } from '../../context/PortfolioContext';
+import { usePortfolio } from '../context/PortfolioContext';
+import { useRouter } from 'next/navigation';
 
 export default function AddPortfolio() {
   const { addPortfolio } = usePortfolio();
+  const router = useRouter();
 
   const [form, setForm] = useState({
-    firstName: '',
-    lastName: '',
-    address: '',
-    phone: '',
-    school: '',
-    gpa: '',
-    skills: '',
-    reason: '',
-    major: '',
-    university: '',
+    firstName: '', lastName: '', address: '', phone: '',
+    school: '', gpa: '', skills: '', reason: '',
+    major: '', university: ''
   });
 
-  // ใช้ keyof typeof form แทน any
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const name = e.target.name as keyof typeof form;
     setForm({ ...form, [name]: e.target.value });
@@ -27,32 +21,13 @@ export default function AddPortfolio() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    // เพิ่ม id ให้ portfolio
-    const newPortfolio = {
-      id: Date.now(),
-      ...form,
-    };
-
-    addPortfolio(newPortfolio);
-
-    // เก็บลง localStorage
-    const stored = JSON.parse(localStorage.getItem('portfolios') || '[]');
-    localStorage.setItem('portfolios', JSON.stringify([...stored, newPortfolio]));
-
-    // รีเซ็ตฟอร์ม
+    addPortfolio({ id: Date.now(), ...form });
     setForm({
-      firstName: '',
-      lastName: '',
-      address: '',
-      phone: '',
-      school: '',
-      gpa: '',
-      skills: '',
-      reason: '',
-      major: '',
-      university: '',
+      firstName: '', lastName: '', address: '', phone: '',
+      school: '', gpa: '', skills: '', reason: '',
+      major: '', university: ''
     });
+    router.push('/teacher'); // redirect ไปหน้าอาจารย์
   };
 
   return (
